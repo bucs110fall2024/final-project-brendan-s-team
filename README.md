@@ -38,7 +38,11 @@ Brendan Kearney
 
 ### Classes
 
-- << You should have a list of each of your classes with a description >>
+- Player
+    - contains all of the attributes needed for the player, such as hand size and actions the player can perform such as hitting or standing
+- Card
+    - contains all of the data a card needs, such as a suit, rank, and value (used to calculated the value of a hand)
+
 
 ## ATP
 
