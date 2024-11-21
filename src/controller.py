@@ -1,7 +1,7 @@
 import pygame
 from src.button import Button
 from src.deck import Deck
-# from card import Card
+from src.card import Card
 # from player import Player
 
 class Controller:
@@ -13,7 +13,7 @@ class Controller:
     pygame.init()
     pygame.event.pump()
 
-    self.screen = pygame.display.set_mode((1000,600))
+    self.screen = pygame.display.set_mode((1000, 600))
     self.state = 'START'
     self.caption = pygame.display.set_caption('Blackjack')
     
@@ -51,8 +51,12 @@ class Controller:
       pygame.display.flip()
       
   def gameloop(self):
+
+    deck = Deck()
+    deck.make_deck()
+
     while self.state == 'GAME':
-      #1. Handle Events
+      #1. event handler
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
           pygame.quit()
@@ -62,6 +66,9 @@ class Controller:
 
       #3 redraw next frame
       self.screen.fill('darkgreen')
+      card = Card('S', '10')
+      cardimg = card.load_image()
+      self.screen.blit(cardimg, (50, 50))
       #4 display next frame
       pygame.display.flip()
 

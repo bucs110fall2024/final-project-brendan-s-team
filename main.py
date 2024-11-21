@@ -4,8 +4,6 @@ from src.controller import Controller
 
 def main():
     pygame.init()
-    deck = Deck()
-    deck.make_deck()
     game = Controller()
     game.mainloop()
 
