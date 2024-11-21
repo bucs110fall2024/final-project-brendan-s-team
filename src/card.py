@@ -16,4 +16,4 @@ class Card:
         #self.image = image
 
     def __repr__(self): 
-        return f"{self.rank} - {self.suit} (value: {self.value})"
+        return f"{self.rank}-{self.suit} (value: {self.value})"
