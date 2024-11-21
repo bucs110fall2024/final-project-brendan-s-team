@@ -1,5 +1,5 @@
 from src.card import Card
-#import random
+import random
 
 class Deck:
     def __init__(self, deck=0):
@@ -14,4 +14,5 @@ class Deck:
             for rank, value in zip(ranks, values):
                 card = Card(suit, rank, value) 
                 deck.append(card) 
-        print(deck)
+        random.shuffle(deck)
+

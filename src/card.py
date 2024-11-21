@@ -1,4 +1,5 @@
 #from player import Player
+import pygame
 
 class Card:
 
@@ -13,7 +14,7 @@ class Card:
         self.suit = suit
         self.rank = rank
         self.value = value
-        #self.image = image
+        self.image = pygame.image.load(f'assets/{self.rank}-{self.suit}.png')
 
     def __repr__(self): 
-        return f"{self.rank}-{self.suit} (value: {self.value})"
+        return f"{self.rank}-{self.suit} (value: {self.value}) (image: {self.image})"
