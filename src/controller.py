@@ -83,9 +83,11 @@ class Controller:
               pcards.append((cardimg, (hand_x, 350)))
       #2 update game logic
       if playerhand == 21:
-        pcards.clear()
-        playerhand = 0
-        hand_x = 375
+        blackjack = Button((0,0), (500,300), self.screen, 'BlackJack!', (110,110,110))
+        blackjack.draw()
+        # pcards.clear()
+        # playerhand = 0
+        # hand_x = 375
 
       elif playerhand > 21:
         pcards.clear()
