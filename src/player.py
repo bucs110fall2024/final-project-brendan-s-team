@@ -1,4 +1,4 @@
-import Card
+#from card import Card
 
 class Player():
     def __init__(self, hand_size = 0):
@@ -14,10 +14,13 @@ class Player():
         args:
         return: hand_size
         """
+        self.hand_size = hand_size
+        if self.hand_size > 21:
+            pass
     
-    def stand(self):
+    def stand(self, hand_size):
         """
         allows the player to 'stand', then determines the winner of the game
-        args:
+        args: hand_size - the size of the players hand
         return: win (boolean)
         """
