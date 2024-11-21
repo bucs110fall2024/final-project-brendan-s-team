@@ -55,20 +55,59 @@ class Controller:
     deck = Deck()
     deck.make_deck()
 
+    playerhand = 0
+    pcards = []
+    dealerhand = 0
+    dcards = []
+
+    hand_x = 375
+
+    card = deck.deal_card()
+    pcards.append((card.load_image(), (hand_x, 350)))
+    playerhand += Card.value(card)
+
     while self.state == 'GAME':
+
       #1. event handler
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
           pygame.quit()
           exit()
-      
-      #2 collisions and update models
+        #hit button
+        if event.type == pygame.MOUSEBUTTONDOWN:
+          if hit.collides(event.pos):
+              hand_x += 25
+              card = deck.deal_card()
+              playerhand += Card.value(card)
+              cardimg = card.load_image()
+              pcards.append((cardimg, (hand_x, 350)))
+      #2 update game logic
+      if playerhand == 21:
+        pcards.clear()
+        playerhand = 0
+        hand_x = 375
+
+      elif playerhand > 21:
+        pcards.clear()
+        playerhand = 0
+        hand_x = 375
+
 
       #3 redraw next frame
       self.screen.fill('darkgreen')
-      card = Card('S', '10')
-      cardimg = card.load_image()
-      self.screen.blit(cardimg, (50, 50))
+
+      for cardimg, pos in pcards: 
+        self.screen.blit(cardimg, pos)
+
+      hit = Button((75,75), (300,475), self.screen, 'Hit', (110, 110, 110))
+      hit.draw()
+
+      size = Button((0, 0), (500, 560), self.screen, f'{playerhand}', (110, 110, 110))
+      size.draw()
+
+      stand = Button((100, 75), (600, 475), self.screen, 'Stand', (110, 110, 110))
+      stand.draw()
+
       #4 display next frame
       pygame.display.flip()
 

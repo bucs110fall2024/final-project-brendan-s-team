@@ -2,11 +2,11 @@ from src.card import Card
 import random
 
 class Deck:
-    def __init__(self, deck=0):
+    def __init__(self):
         """
         inits the deck object
         """
-        self.deck = deck
+        self.deck = []
     
     def make_deck(self):
         """
@@ -19,6 +19,16 @@ class Deck:
         for suit in suits:
             for rank, value in zip(ranks, values):
                 card = Card(suit, rank, value) 
-                deck.append(card) 
-        random.shuffle(deck)
+                self.deck.append(card) 
+        random.shuffle(self.deck)
+    
+    def deal_card(self):
+        """
+        randomly deals a card from the deck, removes it from the deck afterwards
+        """
+        card = random.choice(self.deck)
+        self.deck.remove(card)
+        print(card)
+        return card
+    
 
