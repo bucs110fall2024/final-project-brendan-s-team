@@ -8,7 +8,7 @@ class Controller:
   
   def __init__(self):
     """
-    docstring
+    inits pygame and the initial screen, state, and window caption
     """
     pygame.init()
     pygame.event.pump()
@@ -24,10 +24,10 @@ class Controller:
     while True:
       if self.state == 'GAME':
         self.gameloop()
-      elif self.state == 'END':
-        self.endloop()
       elif self.state == 'START':
         self.startloop()
+      elif self.state == 'END':
+        self.endloop()
 
   def startloop(self):
     while self.state == 'START':
@@ -67,6 +67,7 @@ class Controller:
     playerhand += Card.value(card)
 
     while self.state == 'GAME':
+      self.screen.fill('darkgreen')
 
       #1. event handler
       for event in pygame.event.get():
@@ -81,26 +82,13 @@ class Controller:
               playerhand += Card.value(card)
               cardimg = card.load_image()
               pcards.append((cardimg, (hand_x, 350)))
+
       #2 update game logic
-      if playerhand == 21:
-        blackjack = Button((0,0), (500,300), self.screen, 'BlackJack!', (110,110,110))
-        blackjack.draw()
-        # pcards.clear()
-        # playerhand = 0
-        # hand_x = 375
 
-      elif playerhand > 21:
-        pcards.clear()
-        playerhand = 0
-        hand_x = 375
-
-
-      #3 redraw next frame
-      self.screen.fill('darkgreen')
-
+      #2 redraw next frame
       for cardimg, pos in pcards: 
         self.screen.blit(cardimg, pos)
-
+      # UI buttons
       hit = Button((75,75), (300,475), self.screen, 'Hit', (110, 110, 110))
       hit.draw()
 
@@ -110,8 +98,28 @@ class Controller:
       stand = Button((100, 75), (600, 475), self.screen, 'Stand', (110, 110, 110))
       stand.draw()
 
-      #4 display next frame
+      #3 display next frame
       pygame.display.flip()
+
+      #4 update game logic
+      if playerhand == 21:
+        show_message = 'Blackjack!'
+        playerhand = 0
+        hand_x = 375
+      elif playerhand > 21:
+        show_message = 'Bust! You Lose'
+        playerhand = 0
+        hand_x = 375
+      
+      if show_message():
+       message_button = Button((0, 0), (500, 300), self.screen, show_message, (110, 110, 110)) 
+       message_button.draw() 
+       pygame.display.flip() 
+       pygame.time.wait(1000) 
+       pcards.clear() 
+       show_message = None
+
+
 
   def endloop(self):
     while self.state == 'END':
@@ -127,3 +135,14 @@ class Controller:
       self.screen.fill('darkgreen')
       #4 display next frame
       pygame.display.flip()
+  
+  def game_logic(self, playerhand):
+      if playerhand == 21:
+        blackjack = Button((0,0), (500,300), self.screen, 'BlackJack!', (110,110,110))
+        blackjack.draw()
+        # pcards.clear()
+        # playerhand = 0
+        # hand_x = 375
+      elif playerhand > 21:
+        pbust = Button((0,0), (500,300), self.screen, 'Bust! You Lose', (110,110,110))
+        pbust.draw()

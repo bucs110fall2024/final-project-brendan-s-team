@@ -30,5 +30,3 @@ class Deck:
         self.deck.remove(card)
         print(card)
         return card
-    
-
