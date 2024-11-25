@@ -60,13 +60,38 @@ class Controller:
     dealerhand = 0
     dcards = []
 
-    hand_x = 375
+    show_message = None 
+    message_timer = None
 
+    phand_x = 385
+    dhand_x = 385
+    
+    card_back = pygame.image.load('assets/BACK.png')
+    card_back = pygame.transform.scale(card_back, (125, 181.5))
+
+    #deal first player card
     card = deck.deal_card()
-    pcards.append((card.load_image(), (hand_x, 350)))
+    pcards.append((card.load_image(), (phand_x, 350)))
     playerhand += Card.value(card)
 
+    #deal first dealer card
+    card = deck.deal_card()
+    dcards.append((card.load_image(), (dhand_x, 25)))
+    dealerhand += Card.value(card)
+
+    #deal second player card
+    card = deck.deal_card()
+    pcards.append((card.load_image(), (phand_x, 350)))
+    playerhand += Card.value(card)  
+
+    #deal hidden dealer card
+    hidden_card = card_back
+    
+    hidden_card = Card.load_hidden_card(card)
+
     while self.state == 'GAME':
+
+      current_time = pygame.time.get_ticks()
       self.screen.fill('darkgreen')
 
       #1. event handler
@@ -77,17 +102,19 @@ class Controller:
         #hit button
         if event.type == pygame.MOUSEBUTTONDOWN:
           if hit.collides(event.pos):
-              hand_x += 25
+              hand_x += 20
               card = deck.deal_card()
               playerhand += Card.value(card)
               cardimg = card.load_image()
               pcards.append((cardimg, (hand_x, 350)))
 
-      #2 update game logic
-
-      #2 redraw next frame
+      #2 draw cards on screen
       for cardimg, pos in pcards: 
         self.screen.blit(cardimg, pos)
+      for cardimg, pos in dcards: 
+        self.screen.blit(cardimg, pos)
+      self.screen.blit(hidden_card, (dhand_x + 20, 25))
+
       # UI buttons
       hit = Button((75,75), (300,475), self.screen, 'Hit', (110, 110, 110))
       hit.draw()
@@ -98,28 +125,31 @@ class Controller:
       stand = Button((100, 75), (600, 475), self.screen, 'Stand', (110, 110, 110))
       stand.draw()
 
-      #3 display next frame
-      pygame.display.flip()
-
-      #4 update game logic
-      if playerhand == 21:
+      #check game logic
+      if playerhand == 21 and not show_message:
         show_message = 'Blackjack!'
-        playerhand = 0
-        hand_x = 375
-      elif playerhand > 21:
+        message_timer = current_time
+      elif playerhand > 21 and not show_message:
         show_message = 'Bust! You Lose'
-        playerhand = 0
-        hand_x = 375
-      
-      if show_message():
-       message_button = Button((0, 0), (500, 300), self.screen, show_message, (110, 110, 110)) 
-       message_button.draw() 
-       pygame.display.flip() 
-       pygame.time.wait(1000) 
-       pcards.clear() 
-       show_message = None
+        message_timer = current_time
 
+      #3 show message for win or lose
+      if show_message:
+        message_button = Button((0, 0), (500, 300), self.screen, show_message, (110, 110, 110))
+        message_button.draw()
+       
+        if current_time - message_timer > 1500:
+          pcards.clear()
+          playerhand = 0
+          hand_x = 385
 
+          card = deck.deal_card()
+          pcards.append((card.load_image(), (hand_x, 350)))
+          playerhand += Card.value(card)
+
+          show_message = None
+    #3 display next frame
+      pygame.display.flip()
 
   def endloop(self):
     while self.state == 'END':
@@ -135,14 +165,3 @@ class Controller:
       self.screen.fill('darkgreen')
       #4 display next frame
       pygame.display.flip()
-  
-  def game_logic(self, playerhand):
-      if playerhand == 21:
-        blackjack = Button((0,0), (500,300), self.screen, 'BlackJack!', (110,110,110))
-        blackjack.draw()
-        # pcards.clear()
-        # playerhand = 0
-        # hand_x = 375
-      elif playerhand > 21:
-        pbust = Button((0,0), (500,300), self.screen, 'Bust! You Lose', (110,110,110))
-        pbust.draw()
