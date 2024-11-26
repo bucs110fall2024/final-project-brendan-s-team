@@ -3,7 +3,7 @@ import pygame
 
 class Card:
 
-    def __init__(self, suit, rank, value=0):
+    def __init__(self, suit, rank, value):
         """
         initialzes the card object
         args: suit - the suit of the card
@@ -17,9 +17,6 @@ class Card:
         self.image = (f'assets/{self.rank}-{self.suit}.png')
         self.CARDSIZE = (125, 181.5)
         self.back = 'assets/BACK.png'
-
-    def value(self):
-        return self.value
 
     def __repr__(self): 
         """
