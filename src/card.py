@@ -1,4 +1,3 @@
-#from player import Player
 import pygame
 
 class Card:
@@ -20,16 +19,14 @@ class Card:
 
     def __repr__(self): 
         """
-        returns the card as a readable string
+        prints the card as a string readable in the console
+        return: the card as a readable string
         """
         return f"{self.rank}-{self.suit} (value: {self.value}) (image: {self.image})"
 
     def load_image(self): 
         """
         loads the image onto the screen, and scales it down to size on the screen
+        return: returns the transformed scale and loaded image
         """
         return pygame.transform.scale(pygame.image.load(self.image), self.CARDSIZE)
-
-    def load_hidden_card(self):
-        return pygame.transform.scale(pygame.image.load(self.back), self.CARDSIZE)
-

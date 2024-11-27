@@ -22,6 +22,7 @@ class Button:
     def draw(self):
         """
         draws the button on screen
+        returns: None
         """
         pygame.draw.rect(self.screen, self.color, pygame.Rect(self.location, self.size), 0, 5)
         caption_surface = self.font.render(self.caption, True, 'white')

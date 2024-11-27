@@ -1,8 +1,6 @@
 import pygame
 from src.button import Button
 from src.deck import Deck
-from src.card import Card
-# from player import Player
 
 class Controller:
   
@@ -30,6 +28,9 @@ class Controller:
         self.endloop()
 
   def startloop(self):
+    """
+    loop for the start menu of the game
+    """
     while self.state == 'START':
       #1. Handle Events
       for event in pygame.event.get():
@@ -51,6 +52,9 @@ class Controller:
       pygame.display.flip()
       
   def gameloop(self):
+    """
+    loop for the main game
+    """
 
     deck = Deck()
     deck.make_deck()
@@ -86,11 +90,11 @@ class Controller:
     pcards.append((card.load_image(), (phand_x, 350)))
     playerhand += card.value
 
-    #deal hidden dealer card
-    hidden_card = card_back
-    hidden_card = Card.load_hidden_card(card)
-
     while self.state == 'GAME':
+
+      if deck.deck_size() <= 4:
+        deck = Deck()
+        deck.make_deck()
 
       current_time = pygame.time.get_ticks()
       self.screen.fill('darkgreen')
@@ -116,8 +120,6 @@ class Controller:
         self.screen.blit(cardimg, pos)
       for cardimg, pos in dcards: 
         self.screen.blit(cardimg, pos)
-      hidden_card_pos = (dhand_x + 20, 25)
-      self.screen.blit(hidden_card, (hidden_card_pos))
 
       # UI buttons
       hit = Button((75,75), (300,475), self.screen, 'Hit', (110, 110, 110))
@@ -133,36 +135,39 @@ class Controller:
       stand.draw()
 
       #check game logic
-      if is_stand == False:
-        if playerhand == 21 and not show_message:
-          show_message = 'Blackjack!'
-          message_timer = current_time
-        elif playerhand > 21 and not show_message:
-          show_message = 'Bust! You Lose'
-          message_timer = current_time
-      elif is_stand == True:
-        card = deck.deal_card()
-        dcards.append((card.load_image(), (dhand_x, 25)))
-        dealerhand += card.value
-        self.screen.blit(card.load_image(), hidden_card_pos)
-        if dealerhand < 21 and not show_message:
-          dhand_x += 20
-          card = deck.deal_card()
-          dcards.append((card.load_image(), (dhand_x, 25)))
-          dealerhand += card.value
-        elif dealerhand == 21 and not show_message:
-          show_message = 'Blackjack! You Lose'
-          message_timer = current_time
-        elif dealerhand > 21 and not show_message:
-          show_message = 'Dealer Busts! You Win'
-          message_timer = current_time
-        elif dealerhand > playerhand and not show_message:
-          show_message = 'Dealer Wins!'
-          message_timer = current_time
-        elif dealerhand < playerhand and not show_message:
-          show_message = 'You Win!'
-          message_timer = current_time
-        is_stand = False
+      if not show_message:
+        if is_stand == False:
+          if playerhand == 21:
+            show_message = 'Blackjack!'
+            message_timer = current_time
+          elif playerhand > 21:
+            show_message = 'Bust! You Lose'
+            message_timer = current_time
+        elif is_stand == True:
+          if dealerhand < 17:
+            while dealerhand < 17:
+              dhand_x += 20
+              card = deck.deal_card()
+              dcards.append((card.load_image(), (dhand_x, 25)))
+              dealerhand += card.value
+              is_stand = False
+          if not show_message:
+            if dealerhand == 21:
+              show_message = 'Blackjack! You Lose'
+              message_timer = current_time
+            elif dealerhand > 21:
+              show_message = 'Dealer Busts! You Win'
+              message_timer = current_time
+            elif dealerhand > playerhand:
+              show_message = 'Dealer Wins!'
+              message_timer = current_time
+            elif dealerhand < playerhand:
+              show_message = 'You Win!'
+              message_timer = current_time
+            elif dealerhand == playerhand:
+              show_message = 'Push'
+              message_timer = current_time
+
       #3 show message for win or lose
       if show_message:
         message_button = Button((0, 0), (500, 300), self.screen, show_message, (110, 110, 110))
@@ -192,10 +197,6 @@ class Controller:
           card = deck.deal_card()
           pcards.append((card.load_image(), (phand_x, 350)))
           playerhand += card.value
-
-          #deal hidden dealer card
-          hidden_card = card_back
-          hidden_card = Card.load_hidden_card(card)
 
           show_message = None
     #3 display next frame
