@@ -74,6 +74,7 @@ class Controller:
     card_back = pygame.image.load('assets/BACK.png')
     card_back = pygame.transform.scale(card_back, (125, 181.5))
 
+
     #deal first player card
     card = deck.deal_card()
     pcards.append((card.load_image(), (phand_x, 350)))
@@ -81,7 +82,7 @@ class Controller:
 
     #deal first dealer card
     card = deck.deal_card()
-    dcards.append((card.load_image(), (dhand_x, 25)))
+    dcards.append((card.load_image(), (dhand_x, 15)))
     dealerhand += card.value
 
     #deal second player card
@@ -120,6 +121,7 @@ class Controller:
         self.screen.blit(cardimg, pos)
       for cardimg, pos in dcards: 
         self.screen.blit(cardimg, pos)
+      self.screen.blit(card_back, (850,200))
 
       # UI buttons
       hit = Button((75,75), (300,475), self.screen, 'Hit', (110, 110, 110))
@@ -148,7 +150,7 @@ class Controller:
             while dealerhand < 17:
               dhand_x += 20
               card = deck.deal_card()
-              dcards.append((card.load_image(), (dhand_x, 25)))
+              dcards.append((card.load_image(), (dhand_x, 15)))
               dealerhand += card.value
               is_stand = False
           if not show_message:
@@ -189,7 +191,7 @@ class Controller:
 
           #deal first dealer card
           card = deck.deal_card()
-          dcards.append((card.load_image(), (dhand_x, 25)))
+          dcards.append((card.load_image(), (dhand_x, 15)))
           dealerhand += card.value
 
           #deal second player card
