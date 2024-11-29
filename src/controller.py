@@ -14,7 +14,39 @@ class Controller:
     self.screen = pygame.display.set_mode((1000, 600))
     self.state = 'START'
     self.caption = pygame.display.set_caption('Blackjack')
-    
+
+    #game variables
+    self.deck = Deck()
+    self.deck.make_deck()
+    self.playerhand = 0
+    self.pcards = []
+    self.dealerhand = 0
+    self.dcards = []
+    self.show_message = None 
+    self.message_timer = None
+    self.is_stand = False
+    self.phand_x = 385
+    self.dhand_x = 385
+    self.ante = 0
+    self.chips = 250
+
+  def initialdeal(self):
+    #deal first player card
+    card = self.deck.deal_card()
+    self.pcards.append((card.load_image(), (self.phand_x, 350)))
+    self.playerhand += card.value
+
+    #deal first dealer card
+    card = self.deck.deal_card()
+    self.dcards.append((card.load_image(), (self.dhand_x, 15)))
+    self.dealerhand += card.value
+
+    #deal second player card
+    self.phand_x += 20
+    card = self.deck.deal_card()
+    self.pcards.append((card.load_image(), (self.phand_x, 350)))
+    self.playerhand += card.value
+
   def mainloop(self):
     """
     calls the loops for each respective state
@@ -56,48 +88,13 @@ class Controller:
     loop for the main game
     """
 
-    deck = Deck()
-    deck.make_deck()
-
-    playerhand = 0
-    pcards = []
-    dealerhand = 0
-    dcards = []
-
-    show_message = None 
-    message_timer = None
-    is_stand = False
-
-    phand_x = 385
-    dhand_x = 385
-    
-    card_back = pygame.image.load('assets/BACK.png')
-    card_back = pygame.transform.scale(card_back, (125, 181.5))
-
-    ante = 0
-    chips = 250
-
-    #deal first player card
-    card = deck.deal_card()
-    pcards.append((card.load_image(), (phand_x, 350)))
-    playerhand += card.value
-
-    #deal first dealer card
-    card = deck.deal_card()
-    dcards.append((card.load_image(), (dhand_x, 15)))
-    dealerhand += card.value
-
-    #deal second player card
-    phand_x += 20
-    card = deck.deal_card()
-    pcards.append((card.load_image(), (phand_x, 350)))
-    playerhand += card.value
+    self.initialdeal()
 
     while self.state == 'GAME':
 
-      if deck.deck_size() <= 4:
-        deck = Deck()
-        deck.make_deck()
+      if self.deck.deck_size() <= 4:
+        self.deck = Deck()
+        self.deck.make_deck()
 
       current_time = pygame.time.get_ticks()
       self.screen.fill('darkgreen')
@@ -110,26 +107,26 @@ class Controller:
         #hit button
         if event.type == pygame.MOUSEBUTTONDOWN:
           if hit.collides(event.pos):
-              phand_x += 20
-              card = deck.deal_card()
-              playerhand += card.value
+              self.phand_x += 20
+              card = self.deck.deal_card()
+              self.playerhand += card.value
               cardimg = card.load_image()
-              pcards.append((cardimg, (phand_x, 350)))
+              self.pcards.append((cardimg, (self.phand_x, 350)))
           if stand.collides(event.pos):
-              is_stand = True
+              self.is_stand = True
           if upante.collides(event.pos):
-              if ante <= 350 and chips > ante:
-                ante += 50
+              if self.ante <= 350 and self.chips > self.ante:
+                self.ante += 50
           if downante.collides(event.pos):
-              if ante > 0:
-                ante -= 50
+              if self.ante > 0:
+                self.ante -= 50
 
       #2 draw cards on screen
-      for cardimg, pos in pcards: 
+      for cardimg, pos in self.pcards: 
         self.screen.blit(cardimg, pos)
-      for cardimg, pos in dcards: 
+      for cardimg, pos in self.dcards: 
         self.screen.blit(cardimg, pos)
-      self.screen.blit(card_back, (850,200))
+      self.screen.blit(pygame.transform.scale(pygame.image.load('assets/BACK.png'), (125, 181.5)), (850,200))
 
       # UI buttons
       hit = Button((75,75), (300,475), self.screen, 'Hit', (110, 110, 110))
@@ -145,101 +142,89 @@ class Controller:
       downante.draw()
 
       #display numbers
-      psize = Button((0, 0), (500, 560), self.screen, f'{playerhand}', (110, 110, 110))
+      psize = Button((0, 0), (500, 560), self.screen, f'{self.playerhand}', (110, 110, 110))
       psize.draw()
 
-      dsize = Button((0,0), (500, 250), self.screen, f'{dealerhand}', (110,110,110))
+      dsize = Button((0,0), (500, 250), self.screen, f'{self.dealerhand}', (110,110,110))
       dsize.draw()
 
-      antesize = Button((0,0), (112,25), self.screen, f'Ante: {ante}', (110,110,110))
+      antesize = Button((0,0), (112,25), self.screen, f'Ante: {self.ante}', (110,110,110))
       antesize.draw()
 
       antebar = Button((75,420), (75,50), self.screen, '', 'white')
       antebar.draw()
 
-      chipsdisplay = Button((0,0), (110,565), self.screen, f'Chips: {chips}', (110,110,110))
+      chipsdisplay = Button((0,0), (110,565), self.screen, f'Chips: {self.chips}', (110,110,110))
       chipsdisplay.draw()
-
-      if ante <= 50:
-        antesize = Button((50, ante), (87.5, 410), self.screen, '', 'red')
+      
+      #ante logic
+      if self.ante <= 50:
+        antesize = Button((50, self.ante), (87.5, 410), self.screen, '', 'red')
         antesize.draw()
-      elif ante >= 50:
-        antesize = Button((50, ante), (87.5, 460 - ante), self.screen, '', 'red')
+      elif self.ante >= 50:
+        antesize = Button((50, self.ante), (87.5, 460 - self.ante), self.screen, '', 'red')
         antesize.draw()
       
-      if chips < ante:
-        ante = chips
+      if self.chips < self.ante:
+        self.ante = self.chips
 
       #check game logic
-      if not show_message:
-        if is_stand == False:
-          if playerhand == 21:
-            show_message = 'Blackjack!'
-            message_timer = current_time
-            chips += ante * 1.5
-          elif playerhand > 21:
-            show_message = 'Bust! You Lose'
-            message_timer = current_time
-            chips -= ante
-        elif is_stand == True:
-          if dealerhand < 17:
-            while dealerhand < 17:
-              dhand_x += 20
-              card = deck.deal_card()
-              dcards.append((card.load_image(), (dhand_x, 15)))
-              dealerhand += card.value
-              is_stand = False
-          if not show_message:
-            if dealerhand == 21:
-              show_message = 'Blackjack! You Lose'
-              message_timer = current_time
-              chips -= ante
-            elif dealerhand > 21:
-              show_message = 'Dealer Busts! You Win'
-              message_timer = current_time
-              chips += ante
-            elif dealerhand > playerhand:
-              show_message = 'Dealer Wins!'
-              message_timer = current_time
-              chips -= ante
-            elif dealerhand < playerhand:
-              show_message = 'You Win!'
-              message_timer = current_time
-              chips += ante
-            elif dealerhand == playerhand:
-              show_message = 'Push'
-              message_timer = current_time
+      if not self.show_message:
+        if self.is_stand == False:
+          if self.playerhand == 21:
+            self.show_message = 'Blackjack!'
+            self.message_timer = current_time
+            self.chips += self.ante * 1.5
+          elif self.playerhand > 21:
+            self.show_message = 'Bust! You Lose'
+            self.message_timer = current_time
+            self.chips -= self.ante
+        elif self.is_stand == True:
+          if self.dealerhand < 17:
+            while self.dealerhand < 17:
+              self.dhand_x += 20
+              card = self.deck.deal_card()
+              self.dcards.append((card.load_image(), (self.dhand_x, 15)))
+              self.dealerhand += card.value
+              self.is_stand = False
+          if not self.show_message:
+            if self.dealerhand == 21:
+              self.show_message = 'Blackjack! You Lose'
+              self.message_timer = current_time
+              self.chips -= self.ante
+            elif self.dealerhand > 21:
+              self.show_message = 'Dealer Busts! You Win'
+              self.message_timer = current_time
+              self.chips += self.ante
+            elif self.dealerhand > self.playerhand:
+              self.show_message = 'Dealer Wins!'
+              self.message_timer = current_time
+              self.chips -= self.ante
+            elif self.dealerhand < self.playerhand:
+              self.show_message = 'You Win!'
+              self.message_timer = current_time
+              self.chips += self.ante
+            elif self.dealerhand == self.playerhand:
+              self.show_message = 'Push'
+              self.message_timer = current_time
 
       #3 show message for win or lose
-      if show_message:
-        message_button = Button((0, 0), (500, 300), self.screen, show_message, (110, 110, 110))
+      if self.show_message:
+        message_button = Button((0, 0), (500, 300), self.screen, self.show_message, (110, 110, 110))
         message_button.draw()
        
-        if current_time - message_timer > 1500:
-          pcards.clear()
-          playerhand = 0
-          phand_x = 385
+        if current_time - self.message_timer > 1500:
+          self.pcards.clear()
+          self.playerhand = 0
+          self.phand_x = 385
 
-          dcards.clear()
-          dealerhand = 0
-          dhand_x = 385
+          self.dcards.clear()
+          self.dealerhand = 0
+          self.dhand_x = 385
 
-          #deal first player card
-          card = deck.deal_card()
-          pcards.append((card.load_image(), (phand_x, 350)))
-          playerhand += card.value
+          self.initialdeal()
 
-          #deal first dealer card
-          card = deck.deal_card()
-          dcards.append((card.load_image(), (dhand_x, 15)))
-          dealerhand += card.value
-
-          #deal second player card
-          phand_x += 20
-          card = deck.deal_card()
-          pcards.append((card.load_image(), (phand_x, 350)))
-          playerhand += card.value
-
-          show_message = None
+          self.show_message = None
+          
     #3 display next frame
       pygame.display.flip()
