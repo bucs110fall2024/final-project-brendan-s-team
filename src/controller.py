@@ -74,6 +74,8 @@ class Controller:
     card_back = pygame.image.load('assets/BACK.png')
     card_back = pygame.transform.scale(card_back, (125, 181.5))
 
+    ante = 0
+    chips = 250
 
     #deal first player card
     card = deck.deal_card()
@@ -115,6 +117,12 @@ class Controller:
               pcards.append((cardimg, (phand_x, 350)))
           if stand.collides(event.pos):
               is_stand = True
+          if upante.collides(event.pos):
+              if ante <= 350 and chips > ante:
+                ante += 50
+          if downante.collides(event.pos):
+              if ante > 0:
+                ante -= 50
 
       #2 draw cards on screen
       for cardimg, pos in pcards: 
@@ -127,14 +135,40 @@ class Controller:
       hit = Button((75,75), (300,475), self.screen, 'Hit', (110, 110, 110))
       hit.draw()
 
+      stand = Button((100, 75), (600, 475), self.screen, 'Stand', (110, 110, 110))
+      stand.draw()
+
+      upante = Button((60,60), (115,480), self.screen, '+50', (110,110,110))
+      upante.draw()
+
+      downante = Button((60,60), (45,480), self.screen, '-50', (110,110,110))
+      downante.draw()
+
+      #display numbers
       psize = Button((0, 0), (500, 560), self.screen, f'{playerhand}', (110, 110, 110))
       psize.draw()
 
       dsize = Button((0,0), (500, 250), self.screen, f'{dealerhand}', (110,110,110))
       dsize.draw()
 
-      stand = Button((100, 75), (600, 475), self.screen, 'Stand', (110, 110, 110))
-      stand.draw()
+      antesize = Button((0,0), (112,25), self.screen, f'Ante: {ante}', (110,110,110))
+      antesize.draw()
+
+      antebar = Button((75,420), (75,50), self.screen, '', 'white')
+      antebar.draw()
+
+      chipsdisplay = Button((0,0), (110,565), self.screen, f'Chips: {chips}', (110,110,110))
+      chipsdisplay.draw()
+
+      if ante <= 50:
+        antesize = Button((50, ante), (87.5, 410), self.screen, '', 'red')
+        antesize.draw()
+      elif ante >= 50:
+        antesize = Button((50, ante), (87.5, 460 - ante), self.screen, '', 'red')
+        antesize.draw()
+      
+      if chips < ante:
+        ante = chips
 
       #check game logic
       if not show_message:
@@ -142,9 +176,11 @@ class Controller:
           if playerhand == 21:
             show_message = 'Blackjack!'
             message_timer = current_time
+            chips += ante * 1.5
           elif playerhand > 21:
             show_message = 'Bust! You Lose'
             message_timer = current_time
+            chips -= ante
         elif is_stand == True:
           if dealerhand < 17:
             while dealerhand < 17:
@@ -157,15 +193,19 @@ class Controller:
             if dealerhand == 21:
               show_message = 'Blackjack! You Lose'
               message_timer = current_time
+              chips -= ante
             elif dealerhand > 21:
               show_message = 'Dealer Busts! You Win'
               message_timer = current_time
+              chips += ante
             elif dealerhand > playerhand:
               show_message = 'Dealer Wins!'
               message_timer = current_time
+              chips -= ante
             elif dealerhand < playerhand:
               show_message = 'You Win!'
               message_timer = current_time
+              chips += ante
             elif dealerhand == playerhand:
               show_message = 'Push'
               message_timer = current_time
@@ -202,19 +242,4 @@ class Controller:
 
           show_message = None
     #3 display next frame
-      pygame.display.flip()
-
-  def endloop(self):
-    while self.state == 'END':
-      #1. Handle Events
-      for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-          pygame.quit()
-          exit()
-      
-      #2 collisions and update models
-
-      #3 redraw next frame
-      self.screen.fill('darkgreen')
-      #4 display next frame
       pygame.display.flip()
