@@ -174,7 +174,7 @@ class Controller:
           if self.playerhand == 21:
             self.show_message = 'Blackjack!'
             self.message_timer = current_time
-            self.chips += self.ante * 1.5
+            self.chips += int(self.ante * 1.5)
           elif self.playerhand > 21:
             self.show_message = 'Bust! You Lose'
             self.message_timer = current_time
