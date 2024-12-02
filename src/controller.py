@@ -6,7 +6,8 @@ class Controller:
   
   def __init__(self):
     """
-    inits pygame and the initial screen, state, and window caption
+    inits pygame and the initial screen, state, window caption, and game variables
+    args: self
     """
     pygame.init()
     pygame.event.pump()
@@ -31,6 +32,10 @@ class Controller:
     self.chips = 250
 
   def initialdeal(self):
+    """
+    deals the first cards for the player and dealer
+    args: self
+    """
     #deal first player card
     card = self.deck.deal_card()
     self.pcards.append((card.load_image(), (self.phand_x, 350)))
@@ -50,6 +55,7 @@ class Controller:
   def mainloop(self):
     """
     calls the loops for each respective state
+    args: self
     """
     while True:
       if self.state == 'GAME':
@@ -62,6 +68,7 @@ class Controller:
   def startloop(self):
     """
     loop for the start menu of the game
+    args: self
     """
     while self.state == 'START':
       #1. Handle Events
@@ -86,6 +93,7 @@ class Controller:
   def gameloop(self):
     """
     loop for the main game
+    args: self
     """
 
     self.initialdeal()
