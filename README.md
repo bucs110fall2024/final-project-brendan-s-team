@@ -12,7 +12,7 @@ Brendan Kearney
 
 ## Project Description
 
-<< Give an overview of your project >>
+A simple blackjack game with antes, and all the typical features of blackjack
 
 ***    
 
@@ -30,24 +30,46 @@ Brendan Kearney
 
 ### Features
 
-1. << Feature 1 >>
-2. << Feature 2 >>
+1. Hit
+2. Stand
 3. << Feature 3 >>
 4. << Feature 4 >>
 5. << Feature 5 >>
 
 ### Classes
 
-- Player
-    - contains all of the attributes needed for the player, such as hand size and actions the player can perform such as hitting or standing
 - Card
     - contains all of the data a card needs, such as a suit, rank, and value (used to calculated the value of a hand)
 
 
 ## ATP
 
-| Step                 |Procedure             |Expected Results                   |
-|----------------------|:--------------------:|----------------------------------:|
-|  1                   | Run Counter Program  |GUI window appears with count = 0  |
-|  2                   | click count button   | display changes to count = 1      |
-etc...
+Step 1: Start Game
+    - Open terminal, navigate to project folder, type: python main.py
+    - Press enter
+    - **expected outcome**
+    - green screen with a Start Game button appears
+
+Step 2: Play Game
+    - click on the 'Play Game' button in the center of the screen
+    - **expected outcome**
+    - game should switch to a UI with hit, stand, ante options, and draw the first 3 cards
+
+Step 3: Ante
+    - click on either the +50 or -50 buttons to     raise or lower your ante
+    **expected outcome**
+    - bar representing your ante should increase or decrease depending on the selected amount you chose to ante
+
+Step 4: Hit
+    - click on the button to 'hit'
+    - **expected outcome**
+    - a card should appear in your hand, and it should be added to your total hand value
+    - if it is > 21, you bust
+    - under 21, you can either hit again or stand
+    - = 21, blackjack!
+
+Step 5: Stand
+    - click on the button to 'stand'
+    - **expected outcome**
+    - dealer should draw cards depending on if their hand is below or above 17
+    - game should calculate the winner and display it properly
