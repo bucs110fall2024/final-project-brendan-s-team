@@ -30,6 +30,8 @@ class Controller:
     self.dhand_x = 385
     self.ante = 0
     self.chips = 250
+    self.has_anted = False
+    self.gray = (110,110,110)
 
   def initialdeal(self):
     """
@@ -62,8 +64,8 @@ class Controller:
         self.gameloop()
       elif self.state == 'START':
         self.startloop()
-      elif self.state == 'END':
-        self.endloop()
+      elif self.state == 'LOSE':
+        self.loseloop()
 
   def startloop(self):
     """
@@ -84,7 +86,32 @@ class Controller:
 
       #3 redraw next frame
       self.screen.fill('darkgreen')
-      playagain = Button((200,100), (400,200), self.screen, 'Play Game', (110,110,110))
+      playagain = Button((200,100), (400,200), self.screen, 'Play Game', self.gray)
+      playagain.draw()
+      
+      #4 display next frame
+      pygame.display.flip()
+
+  def loseloop(self):
+    """
+    loop for the start menu of the game
+    args: self
+    """
+    while self.state == 'LOSE':
+      #1. Handle Events
+      for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+          pygame.quit()
+          exit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+          if playagain.collides(event.pos):
+              self.state = 'GAME'
+      
+      #2 collisions and update models
+
+      #3 redraw next frame
+      self.screen.fill('darkgreen')
+      playagain = Button((200,100), (400,200), self.screen, 'Play Again', self.gray)
       playagain.draw()
       
       #4 display next frame
@@ -95,9 +122,7 @@ class Controller:
     loop for the main game
     args: self
     """
-
-    self.initialdeal()
-
+    
     while self.state == 'GAME':
 
       if self.deck.deck_size() <= 4:
@@ -114,20 +139,25 @@ class Controller:
           exit()
         #hit button
         if event.type == pygame.MOUSEBUTTONDOWN:
-          if hit.collides(event.pos):
-              self.phand_x += 20
-              card = self.deck.deal_card()
-              self.playerhand += card.value
-              cardimg = card.load_image()
-              self.pcards.append((cardimg, (self.phand_x, 350)))
-          if stand.collides(event.pos):
-              self.is_stand = True
-          if upante.collides(event.pos):
-              if self.ante <= 350 and self.chips > self.ante:
-                self.ante += 50
-          if downante.collides(event.pos):
-              if self.ante > 0:
-                self.ante -= 50
+          if self.has_anted == False:
+            if confirmante.collides(event.pos):
+              self.has_anted = True
+              self.initialdeal()
+            if upante.collides(event.pos):
+                if self.ante <= 350 and self.chips > self.ante:
+                  self.ante += 50
+            if downante.collides(event.pos):
+                if self.ante > 0:
+                  self.ante -= 50
+          elif self.has_anted == True:
+            if hit.collides(event.pos):
+                self.phand_x += 20
+                card = self.deck.deal_card()
+                self.playerhand += card.value
+                cardimg = card.load_image()
+                self.pcards.append((cardimg, (self.phand_x, 350)))
+            if stand.collides(event.pos):
+                self.is_stand = True
 
       #2 draw cards on screen
       for cardimg, pos in self.pcards: 
@@ -137,32 +167,36 @@ class Controller:
       self.screen.blit(pygame.transform.scale(pygame.image.load('assets/BACK.png'), (125, 181.5)), (850,200))
 
       # UI buttons
-      hit = Button((75,75), (300,475), self.screen, 'Hit', (110, 110, 110))
+      hit = Button((75,75), (300,475), self.screen, 'Hit', self.gray)
       hit.draw()
 
-      stand = Button((100, 75), (600, 475), self.screen, 'Stand', (110, 110, 110))
+      stand = Button((100, 75), (600, 475), self.screen, 'Stand', self.gray)
       stand.draw()
 
-      upante = Button((60,60), (115,480), self.screen, '+50', (110,110,110))
+      upante = Button((60,60), (115,480), self.screen, '+50', self.gray)
       upante.draw()
 
-      downante = Button((60,60), (45,480), self.screen, '-50', (110,110,110))
+      downante = Button((60,60), (45,480), self.screen, '-50', self.gray)
       downante.draw()
 
+      if self.has_anted == False:
+        confirmante = Button((100,60), (447.5,400), self.screen, 'Ante', self.gray)
+        confirmante.draw()
+
       #display numbers
-      psize = Button((0, 0), (500, 560), self.screen, f'{self.playerhand}', (110, 110, 110))
+      psize = Button((0, 0), (500, 560), self.screen, f'{self.playerhand}', self.gray)
       psize.draw()
 
-      dsize = Button((0,0), (500, 250), self.screen, f'{self.dealerhand}', (110,110,110))
+      dsize = Button((0,0), (500, 250), self.screen, f'{self.dealerhand}', self.gray)
       dsize.draw()
 
-      antesize = Button((0,0), (112,25), self.screen, f'Ante: {self.ante}', (110,110,110))
+      antesize = Button((0,0), (112,25), self.screen, f'Ante: {self.ante}', self.gray)
       antesize.draw()
 
       antebar = Button((75,420), (75,50), self.screen, '', 'white')
       antebar.draw()
 
-      chipsdisplay = Button((0,0), (110,565), self.screen, f'Chips: {self.chips}', (110,110,110))
+      chipsdisplay = Button((0,0), (110,565), self.screen, f'Chips: {self.chips}', self.gray)
       chipsdisplay.draw()
       
       #ante logic
@@ -218,7 +252,7 @@ class Controller:
 
       #3 show message for win or lose
       if self.show_message:
-        message_button = Button((0, 0), (500, 300), self.screen, self.show_message, (110, 110, 110))
+        message_button = Button((0, 0), (500, 300), self.screen, self.show_message, self.gray)
         message_button.draw()
        
         if current_time - self.message_timer > 1500:
@@ -230,9 +264,9 @@ class Controller:
           self.dealerhand = 0
           self.dhand_x = 385
 
-          self.initialdeal()
-
           self.show_message = None
+
+          self.has_anted = False
           
     #3 display next frame
       pygame.display.flip()
