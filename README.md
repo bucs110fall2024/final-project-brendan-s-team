@@ -1,7 +1,7 @@
 
 :warning: Everything between << >> needs to be replaced (remove << >> after replacing)
 
-# << Project Title >>
+# Brendan's Blackjack
 ## CS110 Final Project  Fall, 2024
 
 ## Team Members
@@ -32,14 +32,18 @@ A simple blackjack game with antes, and all the typical features of blackjack
 
 1. Hit
 2. Stand
-3. << Feature 3 >>
-4. << Feature 4 >>
-5. << Feature 5 >>
+3. Antes
 
 ### Classes
 
 - Card
-    - contains all of the data a card needs, such as a suit, rank, and value (used to calculated the value of a hand)
+    - contains all of the data needed for a card, including a rank, suit, value, and image file with functions to return the card as a string in the console and to get the image file
+- Deck
+    - uses the card class to create a list of card objects to form a deck, with functions to deal a card and return the length of the deck to check for reshuffling
+- Button
+    - used to create a usable button on screen, with functions to draw the button and to check if the players mouse collides with the button
+- Controller
+    - used for the main game loops and the game logic
 
 
 ## ATP
