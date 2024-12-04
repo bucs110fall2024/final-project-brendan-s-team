@@ -134,11 +134,12 @@ class Controller:
     args: self
     """
     while self.state == 'GAME':
-
+      
+      #check if deck is running out, if so, reshuffle new deck
       if self.deck.deck_size() <= 4:
         self.deck = Deck()
         self.deck.make_deck()
-
+      
       current_time = pygame.time.get_ticks()
       self.screen.fill('darkgreen')
 
