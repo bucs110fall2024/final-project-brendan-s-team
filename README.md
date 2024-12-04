@@ -20,11 +20,11 @@ A simple blackjack game with antes, and all the typical features of blackjack
 
 ### Initial Design
 
-![initial gui](assets/gui_basic.jpg)
+![initial gui](assets/gui_basic.png)
 
 ### Final Design
 
-![final gui](assets/final-gui.jpg)
+![final gui](assets/final-gui.png)
 
 ## Program Design
 
