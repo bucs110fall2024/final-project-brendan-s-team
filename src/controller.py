@@ -88,17 +88,19 @@ class Controller:
       self.screen.fill('darkgreen')
       playagain = Button((200,100), (400,200), self.screen, 'Play Game', self.gray)
       playagain.draw()
+      title = Button((0,0), (500,100), self.screen, 'Brendans Blackjack', self.gray)
+      title.draw()
       
       #4 display next frame
       pygame.display.flip()
 
   def loseloop(self):
     """
-    loop for the start menu of the game
+    loop for the lose menu of the game
     args: self
     """
     while self.state == 'LOSE':
-      #1. Handle Events
+      #event handler
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
           pygame.quit()
@@ -107,8 +109,7 @@ class Controller:
           if playagain.collides(event.pos):
               self.state = 'GAME'
       
-      #2 collisions and update models
-
+      #reset variables on loss
       self.chips = 250
       self.pcards.clear()
       self.playerhand = 0
@@ -126,7 +127,7 @@ class Controller:
       self.screen.fill('darkgreen')
       playagain = Button((200,100), (400,200), self.screen, 'Play Again', self.gray)
       playagain.draw()
-      lose = Button((0,0), (450,50), self.screen, 'Out of Chips! You Lose', self.gray)
+      lose = Button((0,0), (490,100), self.screen, 'Out of Chips! You Lose', self.gray)
       lose.draw()
       
       #4 display next frame
