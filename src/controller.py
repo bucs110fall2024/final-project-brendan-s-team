@@ -109,10 +109,25 @@ class Controller:
       
       #2 collisions and update models
 
+      self.chips = 250
+      self.pcards.clear()
+      self.playerhand = 0
+      self.phand_x = 385
+
+      self.dcards.clear()
+      self.dealerhand = 0
+      self.dhand_x = 385
+
+      self.show_message = None
+
+      self.has_anted = False
+
       #3 redraw next frame
       self.screen.fill('darkgreen')
       playagain = Button((200,100), (400,200), self.screen, 'Play Again', self.gray)
       playagain.draw()
+      lose = Button((0,0), (450,50), self.screen, 'Out of Chips! You Lose', self.gray)
+      lose.draw()
       
       #4 display next frame
       pygame.display.flip()
@@ -203,12 +218,15 @@ class Controller:
       if self.ante <= 50:
         antesize = Button((50, self.ante), (87.5, 410), self.screen, '', 'red')
         antesize.draw()
-      elif self.ante >= 50:
+      else:
         antesize = Button((50, self.ante), (87.5, 460 - self.ante), self.screen, '', 'red')
         antesize.draw()
       
       if self.chips < self.ante:
         self.ante = self.chips
+      
+      if self.chips <= 0:
+        self.state = 'LOSE'
 
       #check game logic
       if not self.show_message:
