@@ -54,17 +54,17 @@ Step 1: Start Game
     - Open terminal, navigate to project folder, type: python main.py
     - Press enter
     - **expected outcome**
-    - green screen with a Start Game button appears
+    - green screen with a Start Game button and game title appears
 
 Step 2: Play Game
     - click on the 'Play Game' button in the center of the screen
     - **expected outcome**
-    - game should switch to a UI with hit, stand, ante options, and draw the first 3 cards
+    - game should switch to the main game, and should be prompted with buttons to raise, lower and confirm your ante. should not be ablee to hit or stand until ante is confirmed
 
 Step 3: Ante
-    - click on either the +50 or -50 buttons to     raise or lower your ante
+    - click on either the +50 or -50 buttons to raise or lower your ante, and confirm it by clicking on the button to ante
     **expected outcome**
-    - bar representing your ante should increase or decrease depending on the selected amount you chose to ante
+    - bar representing your ante should increase or decrease depending on the selected amount you chose to ante, and once confirming, the initial cards should be drawn
 
 Step 4: Hit
     - click on the button to 'hit'
@@ -78,4 +78,4 @@ Step 5: Stand
     - click on the button to 'stand'
     - **expected outcome**
     - dealer should draw cards depending on if their hand is below or above 17
-    - game should calculate the winner and display it properly
+    - game should calculate the winner and display it accordingly
