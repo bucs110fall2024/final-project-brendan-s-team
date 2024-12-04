@@ -1,6 +1,3 @@
-
-:warning: Everything between << >> needs to be replaced (remove << >> after replacing)
-
 # Brendan's Blackjack
 ## CS110 Final Project  Fall, 2024
 
@@ -14,6 +11,10 @@ Brendan Kearney
 
 A simple blackjack game with antes, and all the typical features of blackjack
 
+# Additional Modules
+ - pygame
+ - random
+
 ***    
 
 ## GUI Design
@@ -24,7 +25,7 @@ A simple blackjack game with antes, and all the typical features of blackjack
 
 ### Final Design
 
-![final gui](assets/final-gui.png)
+![final gui](assets/finalgui.png)
 
 ## Program Design
 
