@@ -15,7 +15,6 @@ class Card:
         self.value = value
         self.image = (f'assets/{self.rank}-{self.suit}.png')
         self.CARDSIZE = (125, 181.5)
-        self.back = 'assets/BACK.png'
 
     def __repr__(self): 
         """
